@@ -135,3 +135,7 @@ learning_log/.idea/misc.xml
 learning_log/.idea/modules.xml
 learning_log/.idea/workspace.xml
 learning_log/.idea/vcs.xml
+*.xml
+*.iml
+*.xml
+.idea/vcs.xml
