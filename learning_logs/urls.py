@@ -11,4 +11,8 @@ urlpatterns = [
     path('topics/', views.topics, name='topics'),
     # single topics page
     path('topics/<int:topic_id>/', views.topic, name='topic'),
+    # new topics page
+    path('new_topic/', views.new_topic, name='new_topic'),
+    # adding a new entry psge
+    path('new_entry/<int:topic_id>/', views.new_entry, name='new_entry'),
 ]
