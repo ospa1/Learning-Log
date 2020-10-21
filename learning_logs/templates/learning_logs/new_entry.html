@@ -18,7 +18,7 @@
              form.as_p  - displays the form
                         - as_p tells django to render form elements in paragraph format
         -->
-        <form action="{% url 'learning_logs:new_entry' topic_id%}" method='post'>
+        <form action="{% url 'learning_logs:new_entry' topic.id %}" method='post'>
             {% csrf_token %}
             {{ form.as_p }}
             <button name='submit'>Add Entry</button>
