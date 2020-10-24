@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from learning_logs.models import Topic
 from .forms import TopicForm, EntryForm
+from .models import Topic, Entry
 
 
 def index(request):
@@ -21,9 +22,9 @@ def topics(request):
 # shows entries for a topic
 def topic(request, topic_id):
 
-    topic = Topic.objects.get(id=topic_id)  # todo rename variable so it doesnt collide with function name
-    entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'entries': entries}
+    a_topic = Topic.objects.get(id=topic_id)
+    entries = a_topic.entry_set.order_by('-date_added')
+    context = {'topic': a_topic, 'entries': entries}
     return render(request, 'learning_logs/topic.html', context)
 
 
@@ -48,7 +49,7 @@ def new_topic(request):
 # adds a new entry for a topic
 def new_entry(request, topic_id):
 
-    topic = Topic.objects.get(id=topic_id)
+    a_topic = Topic.objects.get(id=topic_id)
 
     # if no data is submitted return blank form
     if request.method != 'POST':
@@ -62,11 +63,43 @@ def new_entry(request, topic_id):
                 so we can set the topic. then we call the save function again
                 to store it in the database.
             """
-            new_entry = form.save(commit=False)
-            new_entry.topic = topic
-            new_entry.save()
+            new_entry_object = form.save(commit=False)
+            new_entry_object.topic = a_topic
+            new_entry_object.save()
             return redirect('learning_logs:topic', topic_id=topic_id)
 
     # display blank or invalid form
-    context = {'topic': topic, 'form': form}
+    context = {'topic': a_topic, 'form': form}
     return render(request, 'learning_logs/new_entry.html', context)
+
+
+# edit a specific entry
+def edit_entry(request, entry_id):
+
+    print("editing entry")
+    # get the entry fro the database
+    entry = Entry.objects.get(id=entry_id)
+    entry_topic = entry.topic
+
+    print(request)
+    if request.method != 'POST':
+        # fill the form with the current entry
+        print('not in post')
+        form = EntryForm(instance=entry)
+    else:
+        """
+            These arguments tell django to create a form instance based on the
+            information associated with the existing entry object, 
+            updated with any relevant data from request.POST
+        """
+        print('in post')
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            print('form is valid')
+            form.save()
+            return redirect('learning_logs:topic', topic_id=entry_topic.id)
+        else:
+            print('form is not valid')
+
+    context = {'entry': entry, 'topic': entry_topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)
