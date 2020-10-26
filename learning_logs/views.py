@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -12,23 +14,31 @@ def index(request):
 
 
 # shows all topics
+@login_required
 def topics(request):
 
-    all_topics = Topic.objects.order_by('date_added')
+    all_topics = Topic.objects.filter(owner=request.user).order_by('date_added')
     context = {'topics': all_topics}
     return render(request, 'learning_logs/topics.html', context)
 
 
 # shows entries for a topic
+@login_required
 def topic(request, topic_id):
 
     a_topic = Topic.objects.get(id=topic_id)
+
+    # Make sure the topic belongs to the current user.
+    if a_topic.owner != request.user:
+        raise Http404
+
     entries = a_topic.entry_set.order_by('-date_added')
     context = {'topic': a_topic, 'entries': entries}
     return render(request, 'learning_logs/topic.html', context)
 
 
 # adds a new topic
+@login_required
 def new_topic(request):
 
     # returns a blank form if its a GET or other request
@@ -39,7 +49,10 @@ def new_topic(request):
         form = TopicForm(data=request.POST)
         # checks if the data is valid (text length < 200 from models.py)
         if form.is_valid():
-            form.save()  # write to database
+            # assign an owner first then save to database
+            a_new_topic = form.save(commit=False)
+            a_new_topic.owner = request.user
+            a_new_topic.save()  # write to database
             return redirect('learning_logs:topics')
 
     context = {'form': form}
@@ -47,6 +60,7 @@ def new_topic(request):
 
 
 # adds a new entry for a topic
+@login_required
 def new_entry(request, topic_id):
 
     a_topic = Topic.objects.get(id=topic_id)
@@ -74,12 +88,17 @@ def new_entry(request, topic_id):
 
 
 # edit a specific entry
+@login_required
 def edit_entry(request, entry_id):
 
     print("editing entry")
     # get the entry fro the database
     entry = Entry.objects.get(id=entry_id)
     entry_topic = entry.topic
+
+    # Make sure the topic belongs to the current user.
+    if entry_topic.owner != request.user:
+        raise Http404
 
     print(request)
     if request.method != 'POST':
