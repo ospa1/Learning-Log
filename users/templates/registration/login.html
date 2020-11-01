@@ -8,15 +8,20 @@
     {% extends "learning_logs/base.html" %}
     {% block content %}
 
+        <!-- load bootstrap -->
+        {% load bootstrap4 %}
+
         <!-- display error if form is incorrect -->
         {% if form.errors %}
             <p>username and password didn't match. Please try again.</p>
         {% endif %}
 
+        <h2>Log in to your account.</h2>
+
         <!-- login view will process the form so it will be our action argument -->
         <form method="post" action="{% url 'users:login' %}">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% bootstrap_form form %}
 
             <button name="submit">Log in</button>
             <!-- we include a hidden form element 'next'; the value argument tells Django
@@ -25,7 +30,7 @@
             <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
         </form>
 
-        {% endblock content %}
+    {% endblock content %}
 
 </body>
 </html>

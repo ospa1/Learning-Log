@@ -9,19 +9,29 @@
 
     {% block content %}
 
-        <p>Topics</p>
+        <h1 style="margin: 0px;text-align: center;">Topics</h1>
+        <hr/>
+        <div style="margin: 0px;text-align: center;">
+           <a href="{% url 'learning_logs:new_topic' %}">Add a new topic</a>
+        </div>
 
-        <ul>
-            {% for topic in topics %}
-                <li>
-                    <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
-                </li>
-            {% empty %}
-                <li>No topics have been added yet.</li>
-            {% endfor %}
-        </ul>
-
-        <a href="{% url 'learning_logs:new_topic' %}">Add a new topic</a>
+        <div class="container">
+            <ul>
+                {% for topic in topics %}
+                    <div class="card">
+                        <div class="card-body">
+                            <a class="card-title" href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">No topics have been added yet.</h4>
+                        </div>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
     {% endblock content %}
 </body>
 </html>

@@ -116,6 +116,7 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             print('form is valid')
             form.save()
+            form.s
             return redirect('learning_logs:topic', topic_id=entry_topic.id)
         else:
             print('form is not valid')
