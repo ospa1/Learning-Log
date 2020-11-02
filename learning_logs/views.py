@@ -116,10 +116,26 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             print('form is valid')
             form.save()
-            form.s
             return redirect('learning_logs:topic', topic_id=entry_topic.id)
         else:
             print('form is not valid')
 
     context = {'entry': entry, 'topic': entry_topic, 'form': form}
     return render(request, 'learning_logs/edit_entry.html', context)
+
+
+# delete a specific entry
+@login_required
+def delete_entry(request, entry_id):
+
+    # get the entry fro the database
+    entry = Entry.objects.get(id=entry_id)
+    entry_topic = entry.topic
+
+    # Make sure the topic belongs to the current user.
+    if entry_topic.owner != request.user:
+        raise Http404
+
+    # todo might have to check if its POST first before assuming it is
+    entry.delete()
+    return redirect('learning_logs:topic', topic_id=entry_topic.id)

@@ -19,6 +19,7 @@
                         <p class="card-text">{{ entry.text|linebreaks }}</p>
                     </div>
                     <p><a href="{% url 'learning_logs:edit_entry' entry.id %}">Edit entry</a></p>
+                    <p><a href="{% url 'learning_logs:delete_entry' entry.id %}">Delete</a></p>
                 </div>
             {% empty %}
                 <p>There are no entries for this topic yet.</p>
