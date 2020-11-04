@@ -37,6 +37,20 @@ def topic(request, topic_id):
     return render(request, 'learning_logs/topic.html', context)
 
 
+# deletes a topic
+@login_required
+def delete_topic(request, topic_id):
+
+    a_topic = Topic.objects.get(id=topic_id)
+
+    # Make sure the topic belongs to the current user.
+    if a_topic.owner != request.user:
+        raise Http404
+
+    a_topic.delete()
+    return topics(request)
+
+
 # adds a new topic
 @login_required
 def new_topic(request):

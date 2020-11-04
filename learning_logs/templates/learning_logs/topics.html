@@ -20,7 +20,11 @@
                 {% for topic in topics %}
                     <div class="card">
                         <div class="card-body">
-                            <a class="card-title" href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+                            <div class="card-title" style="text-align: center;">
+                                <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+                            </div>
+                            <a class="card-link" href="#">Edit</a>
+                            <a class="card-link" href="{% url 'learning_logs:delete_topic' topic.id %}">Delete</a>
                         </div>
                     </div>
                 {% empty %}
