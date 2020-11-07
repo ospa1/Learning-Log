@@ -51,6 +51,42 @@ def delete_topic(request, topic_id):
     return topics(request)
 
 
+# edit a specific entry
+@login_required
+def edit_topic(request, topic_id):
+
+    print("editing topic")
+    # get the topic from the database
+    a_topic = Topic.objects.get(id=topic_id)
+
+    # Make sure the topic belongs to the current user.
+    if a_topic.owner != request.user:
+        raise Http404
+
+    print(request)
+    if request.method != 'POST':
+        # fill the form with the current topic
+        print('not in post')
+        form = TopicForm(instance=a_topic)
+    else:
+        """
+            These arguments tell django to create a form instance based on the
+            information associated with the existing topic object, 
+            updated with any relevant data from request.POST
+        """
+        print('in post')
+        form = TopicForm(instance=a_topic, data=request.POST)
+        if form.is_valid():
+            print('form is valid')
+            form.save()
+            return redirect('learning_logs:topic', topic_id=topic_id)
+        else:
+            print('form is not valid')
+
+    context = {'topic': a_topic, 'form': form}
+    return render(request, 'learning_logs/edit_topic.html', context)
+
+
 # adds a new topic
 @login_required
 def new_topic(request):
@@ -106,7 +142,7 @@ def new_entry(request, topic_id):
 def edit_entry(request, entry_id):
 
     print("editing entry")
-    # get the entry fro the database
+    # get the entry from the database
     entry = Entry.objects.get(id=entry_id)
     entry_topic = entry.topic
 

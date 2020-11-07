@@ -139,3 +139,8 @@ learning_log/.idea/vcs.xml
 *.iml
 *.xml
 .idea/vcs.xml
+
+# others
+ll_env/
+__pycache__/
+*.sqlite3
