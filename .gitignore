@@ -128,7 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 learning_logs/templates/.idea/workspace.xml
-learning_log/secretkey.txt
 learning_log/.idea/encodings.xml
 learning_log/.idea/learning_log.iml
 learning_log/.idea/misc.xml
